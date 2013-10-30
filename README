@@ -1,0 +1,261 @@
+Overview
+--------
+
+For this programming assignment you will be writing a grammar
+for a small object-oriented language.  In particular, you will
+write an ANTLR grammar specification for a language with the
+features and characteristics that I outline in Part II.
+Because of the flexibility I am giving each of you, I expect
+that no two grammars will be the same.  That is, each of you
+will produce a *dialect* of the language described below.
+
+The assignment will provide you with experience in programming language design,
+specifically with crafting a grammar suitable for the LL(*) parsing algorithm.
+I implore you not to take the easy way out and look up the grammar
+for Java (or C/C++/C#).  You will only learn from this assignment
+if you eschew these resources.
+
+
+Part I: Getting Started
+-----------------------
+
+Your first task is to copy the appropriate files and directories from p1
+into a new p2 directory on the svn server.
+You should load the project preserving the directory structure and
+such that build.xml (the Ant build file) has the following address:
+   https://steel.cs.ua.edu/svn/courses/603/2011/userid/p2/trunk/build.xml
+Instructions on submitting the assignment are at the end of this document.
+
+The code name for the first project was 'dots'; the code name for this
+project is 'ohno' (as in "oh no, not another derivative, academic language").
+Please name your ANTLR file 'OhNo.g'.  You will need to rename or alter
+several files/directories from p1, including the Ant file.
+
+I strongly recommend that you investigate and utilize ANTLRWorks for this project.
+A common mistake for novice grammar writers is to assume that a parser is working
+if it does not return an error.  It is often the case that a grammar will accept
+a given input, but produce the incorrect (that is, an unexpected) parse tree.
+This is typically an unintended consequence of "widening" a production.  That is,
+if you find yourself making a production more general, take care that your new
+production does not accept input that you are attempting to recognize elsewhere.
+
+
+Part II: OhNo Language
+----------------------
+
+A program may contain only one file (that is, each file is independent and self-contained).
+Each file may contain multiple classes, interfaces, and statements. For example:
+   interface Talks {
+      void speak ();
+   }
+   abstract class Animal implements Talks {
+      String name;
+      Animal (String name) {
+         self.name = name; // self is a reserved word
+      }
+      String getName () { return name; }
+   }
+   class Dog extends Animal {
+      Dog (String name) {
+         super(name);
+      }
+      void speak () { print("I am a talking dog."); }
+   }
+
+Unlike Java, there is no main method. Statements not contained
+in a class or interface definition are considered the main program.
+
+There are five built-in types: Boolean, Integer, String, List, and Map.
+All are objects (OhNo does not have primitive types).
+There are literal booleans, integers, strings, lists, and maps. The boolean literals
+are 'true' and 'false' (without the quotes).  Lists can be nested.
+
+##################################################
+## BEGIN CUSTOMIZABLE
+##
+## YOU MAY CUSTOMIZE THE PUNCTUATION SYMBOLS
+## AND OPERATORS IN THIS SECTION
+##################################################
+The list literal is a list of expressions enclosed in square brackets and separated by commas.
+
+Expressions may contain the following operators (with usual precedence):
+   + - * / ++ -- ! && || < <= > >= == !=
+Allow nested expressions in parentheses.  Allow list indexing using square bracket ---
+allow an arbitrary expression between the square brackets. Allow map access using
+curly braces --- again, allow an arbitrary expression between the curly braces.
+
+The map literal is a list of key-value pairs enclosed in curly braces and
+separated by commas. A key-value pair is an integer or string literal, followed
+by the => operator, followed by an arbitrary expression. Maps can be nested. Maps can
+contain lists and vice-versa.
+################################
+## END CUSTOMIZABLE
+################################
+
+Method calls are similar to Java: foo() or object.foo(<args>) or object.foo(<args>).bar(<args>) etc
+
+Other details:
+   * No packages, generics, or exceptions are required
+##################################################
+## BEGIN CUSTOMIZABLE
+##
+## YOU MAY CUSTOMIZE THE KEYWORDS
+## IN THIS SECTION
+##################################################
+   * An interface may inherit a single interface (using keywords extends)
+   * A class may implement a single interface (using keywords implements) as well as
+     inherit a single class (extends)
+   * new operator: new Dog()
+################################
+## END CUSTOMIZABLE
+################################
+   * A class may be abstract
+   * Classes may be nested in other classes or in methods
+   * No visibility specifier for classes or interfaces
+   * Methods may be overloaded
+##################################################
+## BEGIN CUSTOMIZABLE
+##
+## YOU MAY CUSTOMIZE VISIBILITY SPECIFIERS
+## IN THIS SECTION
+##################################################
+   * Methods may have a visibility specifier (private, protected, public), public is default
+################################
+## END CUSTOMIZABLE
+################################
+   * No visibility specifier for member variables, all are private
+   * Methods and member variables may be static
+   * Allow super() calls in constructors
+   * if, while, return, and variable assignment built-in
+   * traditional Java-like for loops built-in: for (int i; i < size; ++i) { /* ... */ }
+   * new Java-like for each loops built-in: for (String s : listvar) { /* ... */ }
+   * switch built-in, allow the user to switch on an arbitrary expression
+   * Allow block statements { ... } in methods and the file
+##################################################
+## BEGIN CUSTOMIZABLE
+##
+## YOU MAY CUSTOMIZE THE METHOD NAMES
+## IN THIS SECTION
+##################################################
+   * Two print methods built-in: print(<expr>); and printn(<expr>);
+################################
+## END CUSTOMIZABLE
+################################
+   * Allow C /* ... */ and C++ //... style comments
+
+That's it. When in doubt, mimic the semantics of Java.
+
+
+Part III: OhNo Parser
+---------------------
+
+The tasks for this part are to:
+
+1. Use ANTLR to create a grammar for the OhNo language.
+   The grammar file name should be named OhNo.g.
+
+2. Create a test suite of positive and negative test cases.  Note that a positive
+   test case is expected to pass, whereas a negative test case is expected to fail.
+
+3. Write a driver program that prints "passed" or "failed" (without the quotes)
+   if a parse of the provided file is successful or not, respectively. Your Ant
+   file and driver should work as follows:
+
+   To compile:
+      $ ant
+
+   To test the parser (using test/a.no as input):
+      $ java -jar dist/ohno-0.1.jar test/a.no
+
+   To test the parser multiple times with one program invocation:
+      $ java -jar dist/ohno-0.1.jar test/a.no test/b.no ... test/n.no
+
+4. Submit:
+   * Be sure to disable any debugging output before submitting.
+     I will deduct points if you do not do so.
+
+   * Create an svn tag of your completed assignment
+     such that build.xml (the Ant build file) has the following address:
+        https://steel.cs.ua.edu/svn/courses/603/2011/userid/p2/tags/ohno-0.1/build.xml
+
+
+Part IV: OhNo AST
+-----------------
+
+The tasks for this part are to:
+
+1. Add rewrite rules to your parser grammar to build an AST.
+   The grammar file name should be named OhNo.g.
+
+2. Write a tree grammar that pretty prints the AST.
+   The grammar file name should be PrettyPrint.g.
+
+3. Submit:
+   * Be sure to disable any debugging output before submitting.
+     I will deduct points if you do not do so.
+
+   * Create an svn tag of your completed assignment
+     such that build.xml (the Ant build file) has the following address:
+        https://steel.cs.ua.edu/svn/courses/603/2011/userid/p2/tags/ohno-0.2/build.xml
+
+
+Part V: OhNo Symbol Tables
+--------------------------
+
+The tasks for this part are to:
+
+1. Write a tree grammar that builds symbol tables.
+   The grammar file name should be named Def.g (for definition pass).
+
+   You must implement a lookup mechanism and use it to detect errors
+   such as multiple definitions of the same symbol.
+
+2. Write a tree grammar that uses symbols tables.
+   The grammar file name should be named Ref.g (for reference pass).
+
+   You must implement simple checks, such as for uses of undefined symbols,
+   basic type checking, and method name resolution (in the presence of overloading and overriding).
+
+3. Submit:
+   * Be sure to disable any debugging output before submitting.
+     I will deduct points if you do not do so.
+
+   * Create an svn tag of your completed assignment
+     such that build.xml (the Ant build file) has the following address:
+        https://steel.cs.ua.edu/svn/courses/603/2011/userid/p2/tags/ohno-0.3/build.xml
+
+
+Part VI: OhNo Code Generator
+----------------------------
+
+The tasks for this part are to:
+
+1. Write a tree grammar that generates (executable) Java byte code.
+   The grammar file name should be named ByteCodeGenerator.g.
+
+   You must use StringTemplate.
+
+2. Submit:
+   * Be sure to disable any debugging output before submitting.
+     I will deduct points if you do not do so.
+
+   * Create an svn tag of your completed assignment
+     such that build.xml (the Ant build file) has the following address:
+        https://steel.cs.ua.edu/svn/courses/603/2011/userid/p2/tags/ohno-0.4/build.xml
+
+
+Appendix
+--------
+
+Potentially useful links:
+   There are four kinds of ANTLR grammars:
+      http://www.antlr.org/wiki/display/ANTLR3/Grammars
+
+   Available grammar options:
+      http://www.ociweb.com/jnb/jnbJun2008.html#GrammarSyntax
+
+   ANTLRWorks Tree Grammar Debugging:
+      http://www.antlr.org/wiki/pages/viewpage.action?pageId=4554901
+
+   Symbol tables (also see Patterns 18 and 19 in the book):
+      http://www.antlr.org/wiki/display/CS652/Symbol+tables

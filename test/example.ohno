@@ -1,0 +1,71 @@
+int a;
+int b = 5;
+int c = 5, d = 6, e;
+
+list<int> x = [1,2,3,4,5];
+
+SomeClass bar = new SomeClass();
+list<SomeClass> foo = [new SomeClass(), bar];
+
+Tree.Node.Type x = new Tree.Node.Type();
+
+foo[0].somemethod().somemethod();
+
+new Foo.tree.Node(x);
+map<int> y = {"a" => 1, "b" => 2};
+
+void f(int x, int y) {
+  return x + y;
+}
+
+for(int x = 0; x < 10; x++) {
+  f(x);
+}
+
+switch(x+1) {
+  case 5:
+    f(5);
+    break;
+  default:
+}
+
+f();
+
+if (x <= 5 || true && x > 2) {
+  f();
+}
+
+while(x) {
+  print("linux sucks windows 4 ever");
+}
+interface Talks {
+  void speak();
+}
+
+interface Yells extends Talks {
+  void yell();
+}
+
+abstract class Animal implements Talks {
+  string name;
+
+  void Animal(String name) {
+    this.name = name; // this is a reserved word
+  }
+  
+  string getName() { return name; }
+  
+  private:
+  int donothing(Integer x) { return x; }
+}
+
+class Dog extends Animal {
+
+  Dog(string name) {
+    super(name);
+    foo(6+10);
+  }
+
+  void speak() { print("Hello World!\n"); }
+}
+
